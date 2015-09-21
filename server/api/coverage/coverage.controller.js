@@ -25,10 +25,6 @@ exports.show = function(req, res) {
 
 // Creates a new coverage in the DB.
 exports.create = function(req, res) {
-  // Coverage.create(req.body, function(err, coverage) {
-  //   if(err) { return handleError(res, err); }
-  //   return res.json(201, coverage);
-  // });
   var geojson = req.body;
   plott.wifiscanner(function(err, aps){
     if (err) {return handleError(res, err);}
