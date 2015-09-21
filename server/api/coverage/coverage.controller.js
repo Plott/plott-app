@@ -1,7 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
-var Coverage = require('./coverage.model');
+var plott = require('plott');
+// var Coverage = plott.mongoModels.FingerPrints;
+var Coverage = require('./Coverage.model');
+
 
 // Get list of coverages
 exports.index = function(req, res) {
@@ -22,10 +25,20 @@ exports.show = function(req, res) {
 
 // Creates a new coverage in the DB.
 exports.create = function(req, res) {
-  Coverage.create(req.body, function(err, coverage) {
-    if(err) { return handleError(res, err); }
-    return res.json(201, coverage);
+  // Coverage.create(req.body, function(err, coverage) {
+  //   if(err) { return handleError(res, err); }
+  //   return res.json(201, coverage);
+  // });
+  var geojson = req.body;
+  plott.wifiscanner(function(err, aps){
+    if (err) {return handleError(res, err);}
+    geojson.properties.wifi = aps;
+    Coverage.create(geojson, function(err, data) {
+      if(err) { return handleError(res, err); }
+      return res.json(201, data);
+    });
   });
+
 };
 
 // Updates an existing coverage in the DB.

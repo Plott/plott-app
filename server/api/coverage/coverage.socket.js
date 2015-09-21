@@ -3,8 +3,11 @@
  */
 
 'use strict';
+var plott = require('plott');
+var Coverage = plott.mongoModels.FingerPrints;
+// var Coverage = require('./coverage.model');
 
-var Coverage = require('./coverage.model');
+
 
 exports.register = function(socket) {
   Coverage.schema.post('save', function (doc) {
