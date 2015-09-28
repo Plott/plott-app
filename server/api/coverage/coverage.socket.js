@@ -3,9 +3,9 @@
  */
 
 'use strict';
-var plott = require('plott');
-var Coverage = plott.mongoModels.FingerPrints;
-// var Coverage = require('./coverage.model');
+// var plott = require('plott');
+// var Coverage = plott.mongoModels.FingerPrints;
+var Coverage = require('./coverage.model');
 
 
 

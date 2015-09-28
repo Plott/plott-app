@@ -1,3 +1,40 @@
-<div class="col-md-12">
-This is the map view.
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="centerPage" cg-busy="{promise:coveragePromise, backdrop:false, templateUrl:'components/loader/loader.html'}"></div>
+<div id="map"></map>
+<div class="test">{{coverageFeatures | json}}</div>
+  <div ng-show="clickFeature" class='features'>
+    <div class="row">
+    <div class="col-sm-12 col-md-12">
+      <div class="thumbnail">
+        <div class="page-header">
+          <h2>Riverside Cemetery <small>{{clickFeature.section}}-{{clickFeature.lot}}-{{clickFeature.grave_num}}</small></h2>
+        </div>
+        <img ng-src={{clickFeature.url_photo}} alt="Headstone Photo">
+        <div class="caption">
+          <h3>{{clickFeature.first_name}} {{clickFeature.middle_name}} {{clickFeature.last_name}}</h3>
+          <p>{{clickFeature.first_name}} was born on {{clickFeature.dob | date: 'fullDate'}} and died on {{clickFeature.dod | date: 'fullDate'}} at the age of {{clickFeature.age}}.</p>
+          <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="" ng-click="clickFeature = undefined" class="btn btn-default" role="button">Close</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="thumbnail">
+      <div class="page-header">
+        <h2>Nearby Interments </h2>
+      </div>
+      <div class="thumbnail" ng-repeat="n in nearFeatures">
+        <div class="page-header">
+          <h2>{{n.obj.properties.section}}-{{n.obj.properties.lot}}-{{n.obj.properties.grave_num}} <small>{{n.dis | number: 2}} ft</small></h2>
+        </div>
+        <img ng-src={{n.obj.properties.url_photo}} alt="Headstone Photo">
+        <div class="caption">
+          <h3>{{n.obj.properties.first_name}} {{n.obj.properties.middle_name}} {{n.obj.properties.last_name}}</h3>
+          <p><a href="#" class="btn btn-primary" role="button">Zoom To</a><a href="" ng-click="clickFeature = undefined" class="btn btn-default" role="button">More</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

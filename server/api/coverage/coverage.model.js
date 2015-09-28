@@ -6,6 +6,7 @@ var mongoose = require('mongoose'),
 var CoverageSchema = new Schema({
   type: {type: String, default: "Feature"},
   properties: {
+    ip: {type: String, required: true},
     address: {type: String, required: true},
     floor: {type: Number, required: true},
     room: {type: String},
