@@ -1,3 +1,23 @@
-<div class="col-md-12">
-This is the user view.
+<div ng-include="'components/navbar/navbar.html'"></div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="user-panel" ng-click="changeView('buildings')">
+        <h2 class="text-center">Buildings</h2>
+        <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="user-panel" ng-click="changeView('devices')">
+        <h2 class="text-center">Devices</h2>
+        <span class="glyphicon glyphicon-phone" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="user-panel" ng-click="changeView('coverages')">
+        <h2 class="text-center">Coverages</h2>
+        <span class="glyphicon glyphicon-equalizer" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
 </div>

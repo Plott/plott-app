@@ -1,0 +1,21 @@
+$ocean-blue:  #4393B9;
+$white: #F5F5F5;
+
+.user-panel {
+  background: $ocean-blue;
+  height: 25em;
+  margin: 0.25em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+  &:hover {
+    cursor: pointer;
+    background: lighten($ocean-blue, 20%);
+  }
+  h2 {
+    color: $white;
+    margin-top: 1em;
+  }
+  span {
+    position: relative;
+    margin: 0 auto;
+  }
+}
