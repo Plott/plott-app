@@ -1,29 +1,42 @@
-'use strict';
+(function(){
+  'use strict';
 
-angular.module('plottAppApp')
-.controller('MapCtrl', function ($scope, $http, socket) {
+  angular
+    .module('plottAppApp')
+    .controller('MapCtrl', MapCtrl);
 
+  MapCtrl.$inject = ['$scope', '$http', 'socket'];
 
+  function MapCtrl($scope, $http, socket) {
+    var self = this;
 
-   L.mapbox.accessToken = 'pk.eyJ1IjoiY3R3aGl0ZSIsImEiOiItb0dqdUlZIn0.4Zb1DGESXnx0ePxMVLihZQ';
+    self.coverageFeatures = [];
+    self.deleteCoverage = deleteCoverage;
+
+    L.mapbox.accessToken = 'pk.eyJ1IjoiY3R3aGl0ZSIsImEiOiItb0dqdUlZIn0.4Zb1DGESXnx0ePxMVLihZQ';
       var map = L.mapbox.map('map', 'mapbox.streets')
-    .setView([40, -74.50], 9);
+        .setView([40, -74.50], 9)
+        .addControl(L.mapbox.geocoderControl('mapbox.places', {
+        autocomplete: true
+      }));
 
-     $scope.coverageFeatures = [];
+    var heat = L.heatLayer([], { maxZoom: 12 }).addTo(map);
 
      $scope.coveragePromise = $http.get('/api/coverages')
       .then(function(coveragePoints) {
-        $scope.coverageFeatures = coveragePoints.data.features;
-        $scope.coveragePoints = L.geoJson($scope.coverageFeatures, {
+        self.coverageFeatures = coveragePoints.data.features;
+        $scope.coveragePoints = L.geoJson(self.coverageFeatures, {
             style: function (feature) {
                 return {color: feature.properties.color};
             },
             onEachFeature: function (feature, layer) {
-                layer.bindPopup(feature.properties.description);
+              console.log(feature);
+
+              heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
+                layer.bindPopup(feature.properties.wifi);
             }
         }).addTo(map);
-        console.log(socket);
-       socket.syncUpdates('coverage', $scope.coverageFeatures, function(event, item ){
+       socket.syncUpdates('coverage', self.coverageFeatures, function(event, item ){
           $scope.coveragePoints.addData(item);
        });
       }).
@@ -33,8 +46,8 @@ angular.module('plottAppApp')
 
    //On click get interment data
    map.on('click', function(e) {
-    //  console.log(e);
-
+     console.log(e);
+     heat.addLatLng(e.latlng);
           var data= {
               "type": "Feature",
               "properties": {
@@ -53,23 +66,13 @@ angular.module('plottAppApp')
 
          $http.post('/api/coverages', data)
            .then(function(cov) {
-            // $scope.coverageFeatures.push(cov.data);
-              // $scope.coveragePoints.addData($scope.coverageFeatures);
+
            });
    });
 
 
 
-
- // $scope.addThing = function() {
- //   if($scope.newGrave === '') {
- //     return;
- //   }
- //   $http.post('/api/coverages', { name: $scope.newGrave });
- //   $scope.newGrave = '';
- // };
- //
- $scope.deleteCoverage = function(coverage) {
+function deleteCoverage(coverage) {
    $http.delete('/api/coverages/' + coverage._id);
  };
 
@@ -77,4 +80,6 @@ angular.module('plottAppApp')
    socket.unsyncUpdates('coverage');
  });
 
-});
+  }
+
+})();
