@@ -33,7 +33,7 @@
               console.log(feature);
 
               heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-                layer.bindPopup(feature.properties.wifi);
+                layer.bindPopup(feature.properties.wifi[0].signal_level);
             }
         }).addTo(map);
        socket.syncUpdates('coverage', self.coverageFeatures, function(event, item ){
