@@ -6,6 +6,7 @@ angular.module('plottAppApp')
       .state('buildings', {
         url: '/user/:id/buildings',
         templateUrl: 'app/user/buildings.html',
-        controller: 'BuildingsCtrl'
+        controller: 'BuildingsCtrl',
+        authenticated: true
       });
   });

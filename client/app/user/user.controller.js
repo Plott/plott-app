@@ -15,9 +15,7 @@
     $scope.changeView = changeView;
 
     function changeView(view) {
-      console.log(view)
-      // $location.path('/user/' + self.user + '/' + view);
-      $state.go('buildings', {id: self.user});
+      $state.go(view, {id: self.user});
     }
   };
 })();
