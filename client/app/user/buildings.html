@@ -7,16 +7,33 @@
     <div class="col-md-8">
       <h2 class="text-center">Add New Building</h2>
       <div id="building-map"></div>
-      <form novalidate class="css-form">
-        Name: <input type="text" ng-model="user.name" required /><br />
+      <form name="buildingForm" novalidate class="css-form">
+        <!-- <div class="btn btn-info" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
+        accept="image/*" ngf-max-size="20MB" ngf-min-height="100"
+        ngf-resize="{width: 100, height: 100}">Select</div> -->
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" class="form-control" id="address" placeholder="Address" ng-model="self.building.address" required>
+        </div>
+        <!-- <div class="form-group">
+          <label for="FloorNum">Floor #</label>
+          <input type="number" class="form-control" id="FloorNum" placeholder="Floor #" ng-model="self.building.floor_num" required>
+        </div> -->
+        <!-- <div class="form-group">
+          <label for="exampleInputFile">File input</label>
+          <input type="file" id="exampleInputFile">
+          <p class="help-block">Example block-level help text here.</p>
+        </div> -->
+        <!-- Name: <input type="text" ng-model="user.name" required /><br />
         E-mail: <input type="email" ng-model="user.email" required /><br />
         Gender: <input type="radio" ng-model="user.gender" value="male" />male
-        <input type="radio" ng-model="user.gender" value="female" />female<br />
-        <input type="button" ng-click="reset()" value="Reset" />
-        <input type="submit" ng-click="update(user)" value="Save" />
+        <input type="radio" ng-model="user.gender" value="female" />female<br /> -->
+        <input type="button" class="btn btn-warning" ng-click="reset()" value="Reset" />
+        <input type="submit" class="btn btn-info" ng-click="update(building)" value="Save" />
       </form>
-      <pre>user = {{user | json}}</pre>
-      <pre>master = {{master | json}}</pre>
+      <!-- Image thumbnail: <img class="thumbnail" ngf-thumbnail="file || '/thumb.jpg'"> -->
+      <pre>user = {{self.building | json}}</pre>
+      <!-- <pre>master = {{master | json}}</pre> -->
     </div>
     </div>
   </div>
