@@ -4,7 +4,7 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var BuildingSchema = new Schema({
-  owner: String,
+  owner: Number,
   address: String,
   floorplans: [
     {

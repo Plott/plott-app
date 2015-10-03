@@ -5,15 +5,15 @@
     .module('plottAppApp')
     .controller('MapCtrl', MapCtrl);
 
-  MapCtrl.$inject = ['$scope', '$http', 'socket'];
+  MapCtrl.$inject = ['$scope', '$http', 'socket', 'MAPBOX'];
 
-  function MapCtrl($scope, $http, socket) {
+  function MapCtrl($scope, $http, socket, MAPBOX) {
     var self = this;
 
     self.coverageFeatures = [];
     self.deleteCoverage = deleteCoverage;
 
-    L.mapbox.accessToken = 'pk.eyJ1IjoiY3R3aGl0ZSIsImEiOiItb0dqdUlZIn0.4Zb1DGESXnx0ePxMVLihZQ';
+    L.mapbox.accessToken = MAPBOX.TOKEN;
       var map = L.mapbox.map('map', 'mapbox.streets')
         .setView([40, -74.50], 9)
         .addControl(L.mapbox.geocoderControl('mapbox.places', {

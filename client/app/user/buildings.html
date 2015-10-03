@@ -1,4 +1,23 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
-<div class="col-md-12">
-This is the buildings view.
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h2 class="text-center">Your Buildings</h2>
+    </div>
+    <div class="col-md-8">
+      <h2 class="text-center">Add New Building</h2>
+      <div id="building-map"></div>
+      <form novalidate class="css-form">
+        Name: <input type="text" ng-model="user.name" required /><br />
+        E-mail: <input type="email" ng-model="user.email" required /><br />
+        Gender: <input type="radio" ng-model="user.gender" value="male" />male
+        <input type="radio" ng-model="user.gender" value="female" />female<br />
+        <input type="button" ng-click="reset()" value="Reset" />
+        <input type="submit" ng-click="update(user)" value="Save" />
+      </form>
+      <pre>user = {{user | json}}</pre>
+      <pre>master = {{master | json}}</pre>
+    </div>
+    </div>
+  </div>
 </div>
