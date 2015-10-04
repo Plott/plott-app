@@ -10,7 +10,8 @@ $white: #F5F5F5;
     li{
       background: $ocean-blue;
       color: $white;
-      height: 3em;
+      height: 100%;
+      padding: 0.25em;
       margin: 0.25em;
       text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
       &:hover {

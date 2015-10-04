@@ -98,11 +98,11 @@
      */
     function addBuilding(data, callback) {
       var cb = callback || angular.noop;
+      var deferred = $q.defer();
       var user = Auth.getCurrentUser();
-      console.log(user);
       data.properties.owner = user._id;
       data.properties.createdby = user.name;
-      var deferred = $q.defer();
+
       $http.post('/api/buildings', data)
         .then(function(res) {
           deferred.resolve(res);

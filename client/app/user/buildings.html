@@ -5,7 +5,7 @@
       <div class="buildings">
         <h2 class="text-center">Buildings</h2>
         <ul ng-repeat="b in buildings">
-          <li class="text-center" ng-click="zoomToBuilding(b)">{{b.properties.address}}<br>{{b.properties.city}}, {{b.properties.state}} {{b.properties.zip}}</li>
+          <li class="text-center" ng-click="zoomToBuilding(b)"><h4>{{b.properties.address}}<br>{{b.properties.city}}, {{b.properties.state}} {{b.properties.zip}}</h4></li>
 
         </ul>
         <button ng-repeat-end type="button" class="btn btn-success center-block">Add Building</button>
