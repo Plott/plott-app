@@ -8,13 +8,19 @@
 
   angular
     .module('plottAppApp')
-    .factory('buildingService', buildingService);
+    .factory('building', building);
 
-  function buildingService() {
+  /**
+   * @namespace Building
+   * @desc Application wide building service
+   * @memberOf Factories
+   */
+  function building($http, Auth, $q) {
     var self = this;
     var service = {
       getAllBuildings: getAllBuildings,
-      getBuilding: getBuilding,
+      getUserBuilding: getUserBuilding,
+      getUserBuildings: getUserBuildings,
       addBuilding: addBuilding,
       updateBuilding: updateBuilding,
       deleteBuilding: deleteBuilding,
@@ -31,18 +37,55 @@
      * @returns {HttpPromise}
      * @memberOf Factories.Building
      */
-    function getAllBuildings() {
-
+    function getAllBuildings(callback) {
+      var cb = callback || angular.noop;
+      var deferred = $q.defer();
+      $http.get('/api/buildings')
+        .then(function(res) {
+          deferred.resolve(res);
+          return cb(res);
+        })
+        .catch(function(err) {
+          deferred.reject(err);
+          return cb(err);
+        });
+        return deferred.promise;
     }
 
     /**
-     * @name getBuilding
+     * @name getUserBuildings
      * @desc Gets all buildings from specified user
+     * @returns {HttpPromise}
+     * @memberOf Factories.Building
+     */
+    function getUserBuildings(user, callback) {
+      var cb = callback || angular.noop;
+      var deferred = $q.defer();
+      var config = {
+        params: {
+          multi: true
+        }
+      };
+      $http.get('/api/buildings/' + user, config)
+        .then(function(res) {
+          deferred.resolve(res);
+          return cb();
+        })
+        .catch(function(err) {
+          deferred.reject(err);
+          return cb(err);
+        });
+        return deferred.promise;
+    }
+
+    /**
+     * @name getUserBuilding
+     * @desc Gets a building from specified user
      * @param {number} userid - users unquie id
      * @returns {HttpPromise}
      * @memberOf Factories.Building
      */
-    function getBuilding(user_id) {
+    function getUserBuilding() {
 
     }
 
@@ -53,8 +96,20 @@
      * @returns {HttpPromise}
      * @memberOf Factories.Building
      */
-    function addBuilding(user_id) {
-
+    function addBuilding(data, callback) {
+      var cb = callback || angular.noop;
+      data.properties.owner = Auth.getCurrentUser()._id;
+      var deferred = $q.defer();
+      $http.post('/api/buildings', data)
+        .then(function(res) {
+          deferred.resolve(res);
+          return cb();
+        })
+        .catch(function(err) {
+          deferred.reject(err);
+          return cb(err);
+        });
+        return deferred.promise;
     }
 
     function updateBuilding() {

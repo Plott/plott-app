@@ -6,8 +6,12 @@ var mongoose = require('mongoose'),
 var BuildingSchema = new Schema({
   type: {type: String, default: "Feature"},
   properties: {
-    owner: Number,
-    address: String,
+    owner: {type: String, required: true},
+    group: {type: String},
+    address: {type: String, unique : true, required : true},
+    city: {type: String, required: true},
+    state: {type: String, required: true},
+    zip: {type: Number, required: true},
     floorplans: [FloorplanSchema],
     createdby: {type: String},
     createdOn: {type: Date},
@@ -23,7 +27,7 @@ var BuildingSchema = new Schema({
 var FloorplanSchema = new Schema({
   type: {type: String, default: "Feature"},
   properties: {
-    plan_id: {type: Number, required: true},
+    plan_id: {type: Number, unique : true, required: true},
     floor_num: {type: Number, required: true},
     createdby: {type: String},
     createdOn: {type: Date},

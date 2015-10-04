@@ -11,7 +11,6 @@
     var self = this;
 
     self.user = Auth.getCurrentUser()._id;
-    self.message = 'Hello';
     $scope.changeView = changeView;
 
     function changeView(view) {

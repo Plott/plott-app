@@ -3,6 +3,9 @@
   <div class="row">
     <div class="col-md-4">
       <h2 class="text-center">Your Buildings</h2>
+      <ul ng-repeat="b in buildings">
+        <li>{{b.properties.address}}<br>{{b.properties.city}}, {{b.properties.state}} {{b.properties.zip}}</li>
+      </ul>
     </div>
     <div class="col-md-8">
       <h2 class="text-center">Add New Building</h2>
@@ -13,7 +16,19 @@
         ngf-resize="{width: 100, height: 100}">Select</div> -->
         <div class="form-group">
           <label for="address">Address</label>
-          <input type="text" class="form-control" id="address" placeholder="Address" ng-model="self.building.address" required>
+          <input type="text" class="form-control" id="address" placeholder="Address" ng-model="building.properties.address" required>
+        </div>
+        <div class="form-group">
+          <label for="city">City</label>
+          <input type="text" class="form-control" id="city" placeholder="City" ng-model="building.properties.city" required>
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input type="text" class="form-control" id="state" placeholder="State" ng-model="building.properties.state" required>
+        </div>
+        <div class="form-group">
+          <label for="zip">Zip</label>
+          <input type="number" class="form-control" id="zip" ng-model="building.properties.zip" required>
         </div>
         <!-- <div class="form-group">
           <label for="FloorNum">Floor #</label>
@@ -29,10 +44,10 @@
         Gender: <input type="radio" ng-model="user.gender" value="male" />male
         <input type="radio" ng-model="user.gender" value="female" />female<br /> -->
         <input type="button" class="btn btn-warning" ng-click="reset()" value="Reset" />
-        <input type="submit" class="btn btn-info" ng-click="update(building)" value="Save" />
+        <input type="submit" class="btn btn-info" ng-click="addBuilding(building)" value="Save" />
       </form>
       <!-- Image thumbnail: <img class="thumbnail" ngf-thumbnail="file || '/thumb.jpg'"> -->
-      <pre>user = {{self.building | json}}</pre>
+      <pre>user = {{building | json}}</pre>
       <!-- <pre>master = {{master | json}}</pre> -->
     </div>
     </div>

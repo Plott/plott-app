@@ -13,11 +13,21 @@ exports.index = function(req, res) {
 
 // Get a single building
 exports.show = function(req, res) {
-  Building.findById(req.params.id, function (err, building) {
-    if(err) { return handleError(res, err); }
-    if(!building) { return res.send(404); }
-    return res.json(building);
-  });
+  console.log(req.query);
+  if (req.query.multi === 'true'){
+    console.log(req.params.id)
+    Building.find({'properties.owner': req.params.id}, function (err, buildings) {
+      if(err) { return handleError(res, err); }
+      return res.json(200, buildings);
+    });
+  }else{
+    console.log('No Beans')
+    Building.findById(req.params.id, function (err, building) {
+      if(err) { return handleError(res, err); }
+      if(!building) { return res.send(404); }
+      return res.json(building);
+    });
+  }
 };
 
 // Creates a new building in the DB.
