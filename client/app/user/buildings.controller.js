@@ -56,13 +56,15 @@
           pointToLayer: L.mapbox.marker.style,
           style: function(feature) {
             return {
-              // 'marker-size': 'large',
-              // 'marker-symbol': 'building',
+              'marker-size': 'large',
+              'marker-symbol': 'building',
               'marker-color': '#fa0'
             };
           },
           onEachFeature: function(feature, layer) {
-            fullAddress = '<h3><strong>' + feature.properties.address + '</strong><br>' + feature.properties.city + ', ' + feature.properties.state + ' ' + feature.properties.zip + '</h3>'
+            fullAddress = '<h3><strong>' + feature.properties.address + '</strong><br>' +
+              feature.properties.city + ', ' + feature.properties.state + ' ' + feature.properties.zip + '</h3>' +
+              '<a href="' + feature._id + '">Add Floorplan</a>' ;
             layer.bindPopup(fullAddress);
           }
         }).addTo(map);

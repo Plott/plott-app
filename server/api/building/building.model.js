@@ -14,7 +14,7 @@ var BuildingSchema = new Schema({
     zip: {type: Number, required: true},
     floorplans: [FloorplanSchema],
     createdby: {type: String},
-    createdOn: {type: Date},
+    createdOn: {type: Date, default: Date.now},
     editedBy: {type: String},
     editedOn: {type: Date}
   },
@@ -30,7 +30,7 @@ var FloorplanSchema = new Schema({
     plan_id: {type: Number, unique : true, required: true},
     floor_num: {type: Number, required: true},
     createdby: {type: String},
-    createdOn: {type: Date},
+    createdOn: {type: Date, default: Date.now},
     editedBy: {type: String},
     editedOn: {type: Date}
   },

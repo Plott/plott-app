@@ -6,8 +6,8 @@ var crypto = require('crypto');
 var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
-  name: String,
-  email: { type: String, lowercase: true },
+  name: {type: String, unique: true},
+  email: { type: String, lowercase: true, unique: true},
   role: {
     type: String,
     default: 'user'
@@ -89,6 +89,21 @@ UserSchema
       respond(true);
     });
 }, 'The specified email address is already in use.');
+
+// Validate email is not taken
+UserSchema
+  .path('name')
+  .validate(function(value, respond) {
+    var self = this;
+    this.constructor.findOne({name: value}, function(err, user) {
+      if(err) throw err;
+      if(user) {
+        if(self.id === user.id) return respond(true);
+        return respond(false);
+      }
+      respond(true);
+    });
+}, 'The specified username is already in use.');
 
 var validatePresenceOf = function(value) {
   return value && value.length;

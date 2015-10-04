@@ -3,14 +3,14 @@ $white: #F5F5F5;
 
 #building-map {
   width: 100%;
-  height: 50em;
+  height: 40em;
 }
 .buildings {
   ul{
     li{
       background: $ocean-blue;
       color: $white;
-      // height: 25em;
+      height: 3em;
       margin: 0.25em;
       text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
       &:hover {
@@ -19,4 +19,9 @@ $white: #F5F5F5;
       }
     }
   }
+}
+
+.map-form {
+  background: #F8F8F8;
+  padding: 0 0 5em 0;
 }
