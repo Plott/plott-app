@@ -38,6 +38,15 @@ exports.create = function(req, res) {
   });
 };
 
+//Adds floorplan to project
+exports.addFloorplan = function(req, res) {
+  var body = req.body;
+  var _id = req.params.id;
+  console.log(body);
+  console.log(_id);
+  // Building.findByIdAndUpdate(req.params.id, )
+}
+
 // Updates an existing building in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }

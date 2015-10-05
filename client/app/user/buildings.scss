@@ -26,3 +26,11 @@ $white: #F5F5F5;
   background: #F8F8F8;
   padding: 0 0 5em 0;
 }
+
+.rotate-test {
+  -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    transform: rotate(90deg);
+}

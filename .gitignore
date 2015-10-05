@@ -8,3 +8,4 @@ dist
 /server/config/local.env.js
 .buildignore
 npm-debug.log
+client/assets/images/jordanhall_f1.png

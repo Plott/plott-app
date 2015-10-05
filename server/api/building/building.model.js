@@ -12,6 +12,7 @@ var BuildingSchema = new Schema({
     city: {type: String, required: true},
     state: {type: String, required: true},
     zip: {type: Number, required: true},
+    bbox: {type: [Number]},
     floorplans: [FloorplanSchema],
     createdby: {type: String},
     createdOn: {type: Date, default: Date.now},
@@ -29,6 +30,7 @@ var FloorplanSchema = new Schema({
   properties: {
     plan_id: {type: Number, unique : true, required: true},
     floor_num: {type: Number, required: true},
+    image: {type: Buffer, required: true},
     createdby: {type: String},
     createdOn: {type: Date, default: Date.now},
     editedBy: {type: String},

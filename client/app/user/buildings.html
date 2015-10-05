@@ -5,7 +5,14 @@
       <div class="buildings">
         <h2 class="text-center">Buildings</h2>
         <ul ng-repeat="b in buildings">
-          <li class="text-center" ng-click="zoomToBuilding(b)"><h4>{{b.properties.address}}<br>{{b.properties.city}}, {{b.properties.state}} {{b.properties.zip}}</h4></li>
+          <li class="text-center" ng-click="zoomToBuilding(b)">
+            <h4>{{b.properties.address}}<br>{{b.properties.city}}, {{b.properties.state}} {{b.properties.zip}}</h4>
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-success center-block" ng-click="">Floorplans</button>
+              <button type="button" class="btn btn-primary center-block">Zoom to</button>
+              <button type="button" class="btn btn-info center-block">Info</button>
+            </div>
+          </li>
 
         </ul>
         <button ng-repeat-end type="button" class="btn btn-success center-block">Add Building</button>
@@ -13,16 +20,13 @@
     </div>
     <div class="col-md-8 map-form">
       <div>
-        <h2 class="text-center">Add Building</h2>
+        <h2 class="text-center">{{formHeading}}</h2>
       </div>
         <div class="col-md-8">
           <div id="building-map"></div>
         </div>
-        <div class="col-md-4">
-          <form name="buildingForm" novalidate class="css-form">
-            <!-- <div class="btn btn-info" ngf-select ng-model="file" name="file" ngf-pattern="'image/*'"
-            accept="image/*" ngf-max-size="20MB" ngf-min-height="100"
-            ngf-resize="{width: 100, height: 100}">Select</div> -->
+        <div class="col-md-4" ng-switch="formHeading">
+          <form ng-switch-when="Add Building" name="buildingForm" novalidate class="css-form">
             <div class="form-group">
               <label for="address">Address</label>
               <input type="text" class="form-control" id="address" placeholder="Address" ng-model="building.properties.address" required>
@@ -39,24 +43,24 @@
               <label for="zip">Zip</label>
               <input type="number" class="form-control" id="zip" ng-model="building.properties.zip" required>
             </div>
-            <!-- <div class="form-group">
-              <label for="FloorNum">Floor #</label>
-              <input type="number" class="form-control" id="FloorNum" placeholder="Floor #" ng-model="self.building.floor_num" required>
-            </div> -->
-            <!-- <div class="form-group">
-              <label for="exampleInputFile">File input</label>
-              <input type="file" id="exampleInputFile">
-              <p class="help-block">Example block-level help text here.</p>
-            </div> -->
-            <!-- Name: <input type="text" ng-model="user.name" required /><br />
-            E-mail: <input type="email" ng-model="user.email" required /><br />
-            Gender: <input type="radio" ng-model="user.gender" value="male" />male
-            <input type="radio" ng-model="user.gender" value="female" />female<br /> -->
             <input type="button" class="btn btn-warning" ng-click="reset()" value="Reset" />
             <input type="submit" class="btn btn-info" ng-click="addBuilding(building)" value="Save" />
           </form>
-          <!-- Image thumbnail: <img class="thumbnail" ngf-thumbnail="file || '/thumb.jpg'"> -->
-          <!-- <pre>master = {{master | json}}</pre> -->
+
+          <form ng-switch-when="Add Floorplan" name="buildingForm" novalidate class="css-form">
+            <div class="btn btn-primary" ngf-select ngf-change="addImageToMap(file)" ng-model="file" name="file" ngf-pattern="'image/*'"
+            accept="image/*" ngf-max-size="1MB" ngf-min-height="100"
+            ngf-resize="{width: 100, height: 100}">Select File</div>
+            <p ng-if="file">Image thumbnail: <img class="img-thumbnail" ngf-src="file || '/thumb.jpg'"></p>
+            <div class="form-group">
+              <label for="floor">Floor #</label>
+              <input type="number" class="form-control" id="floor" placeholder="" ng-model="building.properties.floor_num" required>
+            </div>
+            <input type="button" class="btn btn-warning" ng-click="reset()" value="Reset" />
+            <input type="submit" class="btn btn-info" ng-click="addBuilding(building)" value="Save" />
+            <pre>{{file | json}}</pre>
+          </form>
+
       </div>
     </div>
     </div>
