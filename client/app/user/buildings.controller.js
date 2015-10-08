@@ -132,7 +132,7 @@
 
     function addImageToMap(file) {
       var bounds = setImageBounds($scope.selectedBuilding.properties.bbox) || map.getBounds();
-      var imageUrl = '/assets/images/jordanhall_f1.png'; //file.$ngfBlobUrl,
+      var imageUrl = '/assets/images/jh1.png'; //file.$ngfBlobUrl,
       $scope.overlay = L.imageOverlay(imageUrl, bounds).addTo(map);
     }
 

@@ -9,3 +9,4 @@ dist
 .buildignore
 npm-debug.log
 client/assets/images/jordanhall_f1.png
+client/assets/images/jh1.png
