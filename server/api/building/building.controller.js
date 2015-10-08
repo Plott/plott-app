@@ -13,15 +13,12 @@ exports.index = function(req, res) {
 
 // Get a single building
 exports.show = function(req, res) {
-  console.log(req.query);
   if (req.query.multi === 'true'){
-    console.log(req.params.id)
     Building.find({'properties.owner': req.params.id}, function (err, buildings) {
       if(err) { return handleError(res, err); }
       return res.json(200, buildings);
     });
   }else{
-    console.log('No Beans')
     Building.findById(req.params.id, function (err, building) {
       if(err) { return handleError(res, err); }
       if(!building) { return res.send(404); }
@@ -40,11 +37,23 @@ exports.create = function(req, res) {
 
 //Adds floorplan to project
 exports.addFloorplan = function(req, res) {
-  var body = req.body;
-  var _id = req.params.id;
-  console.log(body);
-  console.log(_id);
-  // Building.findByIdAndUpdate(req.params.id, )
+  var dirname = require('path').dirname(__dirname);
+  var filename = req.files.file.name;
+  var path = req.files.file.path;
+  var type = req.files.file.mimetype;
+  var read_stream =  fs.createReadStream(dirname + '/' + path);
+  var conn = req.conn;
+  var Grid = require('gridfs-stream');
+
+  Grid.mongo = mongoose.mongo;
+
+  var gfs = Grid(conn.db);
+
+  var writestream = gfs.createWriteStream({
+    filename: filename
+  });
+  
+  read_stream.pipe(writestream);
 }
 
 // Updates an existing building in the DB.
