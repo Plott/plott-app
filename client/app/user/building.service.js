@@ -127,8 +127,23 @@
 
     }
 
-    function addFloorplan() {
+    function addFloorplan(data, callback) {
+      var cb = callback || angular.noop;
+      var deferred = $q.defer();
+      var user = Auth.getCurrentUser();
+      data.properties.owner = user._id;
+      data.properties.createdby = user.name;
 
+      $http.post('/api/buildings/upload', data)
+        .then(function(res) {
+          deferred.resolve(res);
+          return cb();
+        })
+        .catch(function(err) {
+          deferred.reject(err);
+          return cb(err);
+        });
+        return deferred.promise;
     }
 
     function updateFloorplan() {
