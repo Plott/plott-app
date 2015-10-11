@@ -41,7 +41,7 @@ exports.addFloorplan = function(req, res) {
   var filename = req.files.file.name;
   var path = req.files.file.path;
   var type = req.files.file.mimetype;
-  var read_stream =  fs.createReadStream(dirname + '/' + path);
+  var read_stream = fs.createReadStream(dirname + '/' + path);
   var conn = req.conn;
   var Grid = require('gridfs-stream');
 
@@ -52,9 +52,30 @@ exports.addFloorplan = function(req, res) {
   var writestream = gfs.createWriteStream({
     filename: filename
   });
-  
+
   read_stream.pipe(writestream);
-}
+};
+
+//Adds floorplan to project
+exports.getFloorplan = function(req, res) {
+  var pic_id = req.param('id');
+     var gfs = req.gfs;
+
+      gfs.files.find({filename: pic_id}).toArray(function (err, files) {
+
+       if (err) {
+           res.json(err);
+       }
+       if (files.length > 0) {
+           var mime = 'image/jpeg';
+           res.set('Content-Type', mime);
+           var read_stream = gfs.createReadStream({filename: pic_id});
+           read_stream.pipe(res);
+       } else {
+           res.json('File Not Found');
+       }
+   });
+};
 
 // Updates an existing building in the DB.
 exports.update = function(req, res) {

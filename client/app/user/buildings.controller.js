@@ -100,9 +100,9 @@
     function setFormGeocode(res) {
       var data = res.data.features[0];
       $scope.building.properties.address = data.address + ' ' + data.text;
-      $scope.building.properties.city = data.context[0].text;
-      $scope.building.properties.zip = parseInt(data.context[1].text, 10);
-      $scope.building.properties.state = data.context[2].text;
+      $scope.building.properties.city = data.context[1].text;
+      $scope.building.properties.zip = parseInt(data.context[2].text, 10);
+      $scope.building.properties.state = data.context[3].text;
       $scope.building.properties.bbox = data.bbox;
     }
 
@@ -192,7 +192,7 @@
 
     function upload(file) {
        Upload.upload({
-           url: 'upload/url',
+           url: 'api/buildings/upload',
            data: {file: file, 'username': $scope.username}
        }).then(function (resp) {
            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);

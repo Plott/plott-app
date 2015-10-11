@@ -100,7 +100,7 @@
       var cb = callback || angular.noop;
       var deferred = $q.defer();
       var user = Auth.getCurrentUser();
-      data.properties.owner = user._id;
+      data.properties.owner = user.name;
       data.properties.createdby = user.name;
 
       $http.post('/api/buildings', data)
