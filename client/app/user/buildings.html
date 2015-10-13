@@ -54,10 +54,10 @@
             <p ng-if="file">Image thumbnail: <img class="img-thumbnail" ngf-src="file || '/thumb.jpg'"></p>
             <div class="form-group">
               <label for="floor">Floor #</label>
-              <input type="number" class="form-control" id="floor" placeholder="" ng-model="building.properties.floor_num" required>
+              <input type="number" class="form-control" id="floor" placeholder="" ng-model="floor_num" required>
             </div>
             <input type="button" class="btn btn-warning" ng-click="reset()" value="Reset" />
-            <input type="submit" class="btn btn-info" ng-click="upload(building)" value="Update" />
+            <input type="submit" class="btn btn-info" ng-click="upload(file, floor_num)" value="Upload" />
             <pre>{{file | json}}</pre>
           </form>
 

@@ -10,7 +10,7 @@
   function UserCtrl($scope, $state, Auth) {
     var self = this;
 
-    self.user = Auth.getCurrentUser()._id;
+    self.user = Auth.getCurrentUser().name;
     $scope.changeView = changeView;
 
     function changeView(view) {

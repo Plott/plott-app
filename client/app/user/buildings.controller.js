@@ -11,7 +11,7 @@
     var self = this;
     $scope.featureGroup = L.featureGroup();
     $scope.buildings = [];
-    self.user = Auth.getCurrentUser()._id;
+    self.user = Auth.getCurrentUser().name;
     $scope.buildingMarker;
     $scope.reset = reset;
     $scope.formHeading = 'Add Building';
@@ -190,10 +190,11 @@
       });
     }
 
-    function upload(file) {
+    function upload(file, floor_num) {
+      console.log($scope.selectedBuilding)
        Upload.upload({
            url: 'api/buildings/upload',
-           data: {file: file, 'username': $scope.username}
+           data: {file: file, data: {bounds: $scope.overlay._bounds, 'floor_num': floor_num, bid: $scope.selectedBuilding._id}}
        }).then(function (resp) {
            console.log('Success ' + resp.config.data.file.name + 'uploaded. Response: ' + resp.data);
        }, function (resp) {

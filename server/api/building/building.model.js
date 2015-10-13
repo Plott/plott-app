@@ -28,9 +28,10 @@ var BuildingSchema = new Schema({
 var FloorplanSchema = new Schema({
   type: {type: String, default: "Feature"},
   properties: {
-    plan_id: {type: Number, unique : true, required: true},
+    id: {type: Number, required: true},
     floor_num: {type: Number, required: true},
-    image: {type: Buffer, required: true},
+    // image: {type: Buffer, required: true},
+    bounds: Object,
     createdby: {type: String},
     createdOn: {type: Date, default: Date.now},
     editedBy: {type: String},
@@ -40,6 +41,10 @@ var FloorplanSchema = new Schema({
     type     : { type: String, default: "Polygon" },
     coordinates: { type: [Number], index: '2dsphere'}
   }
+});
+
+BuildingSchema.pre('update', function() {
+  this.update({},{ $set: { editedOn: Date.now } });
 });
 
 module.exports = mongoose.model('Building', BuildingSchema);
