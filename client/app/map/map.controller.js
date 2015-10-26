@@ -8,10 +8,10 @@
   MapCtrl.$inject = ['$scope', '$http', 'socket', 'MAPBOX'];
 
   function MapCtrl($scope, $http, socket, MAPBOX) {
-    var self = this;
+    var vm = this;
 
-    self.coverageFeatures = [];
-    self.deleteCoverage = deleteCoverage;
+    vm.coverageFeatures = [];
+    vm.deleteCoverage = deleteCoverage;
 
     L.mapbox.accessToken = MAPBOX.TOKEN;
       var map = L.mapbox.map('map', 'mapbox.streets')
@@ -24,7 +24,7 @@
 
      $scope.coveragePromise = $http.get('/api/coverages')
       .then(function(coveragePoints) {
-        self.coverageFeatures = coveragePoints.data.features;
+        vm.coverageFeatures = coveragePoints.data.features;
         $scope.coveragePoints = L.geoJson(self.coverageFeatures, {
             style: function (feature) {
                 return {color: feature.properties.color};
@@ -36,7 +36,7 @@
                 layer.bindPopup(feature.properties.wifi[0].signal_level);
             }
         }).addTo(map);
-       socket.syncUpdates('coverage', self.coverageFeatures, function(event, item ){
+       socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
           $scope.coveragePoints.addData(item);
        });
       }).
