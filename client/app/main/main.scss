@@ -1,3 +1,28 @@
+#main {
+  background: url('/assets/images/central_station_2x.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  margin-top: 50px;
+}
+.custom-sign-up {
+  border: 2px solid white;
+  height: 5em;
+  width: auto;
+  &:hover {
+    cursor: pointer;
+    background: rgba(122, 122, 122, 0.62);
+  }
+  h2 {
+    padding: auto 0;
+  }
+}
 .thing-form {
     margin: 20px 0;
 }
@@ -19,7 +44,7 @@
     color: #F5F5F5;
     text-align: center;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
-    background: #4393B9;
+    // background: #4393B9;
 }
 
 .footer {
