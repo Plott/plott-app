@@ -12,6 +12,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var errorHandler = require('errorhandler');
+var cors = require('cors');
 var path = require('path');
 var config = require('./environment');
 var passport = require('passport');
@@ -26,6 +27,7 @@ module.exports = function(app) {
   app.set('views', config.root + '/server/views');
   app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
+  app.use(cors());
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
