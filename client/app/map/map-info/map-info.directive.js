@@ -5,9 +5,9 @@
     .module('plottAppApp')
     .directive('mapInfo', mapInfo);
 
-  mapInfo.$inject = [];
+  mapInfo.$inject = ['$log'];
 
-  function mapInfo() {
+  function mapInfo($log) {
     let directive = {
       templateUrl: 'app/map/map-info/map-info.html',
       restrict: 'E',
@@ -25,7 +25,9 @@
     function controller() {
       let vm = this;
       vm.floor = vm.floor || 1;
+      $log.debug(vm.wifi)
       vm.wifi = vm.wifi || [];
+
     }
   }
 
