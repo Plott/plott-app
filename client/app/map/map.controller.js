@@ -9,8 +9,9 @@
 
   function MapCtrl($scope, $http, socket, MAPBOX) {
     var vm = this;
-
+    vm.floor = 1;
     vm.coverageFeatures = [];
+    vm.wifi = vm.coverageFeatures.length;
     vm.deleteCoverage = deleteCoverage;
 
     L.mapbox.accessToken = MAPBOX.TOKEN;
@@ -22,10 +23,10 @@
 
     var heat = L.heatLayer([], { maxZoom: 12 }).addTo(map);
 
-     $scope.coveragePromise = $http.get('/api/coverages')
+     vm.coveragePromise = $http.get('/api/coverages')
       .then(function(coveragePoints) {
         vm.coverageFeatures = coveragePoints.data.features;
-        $scope.coveragePoints = L.geoJson(self.coverageFeatures, {
+        vm.coveragePoints = L.geoJson(self.coverageFeatures, {
             style: function (feature) {
                 return {color: feature.properties.color};
             },
@@ -37,7 +38,7 @@
             }
         }).addTo(map);
        socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
-          $scope.coveragePoints.addData(item);
+          vm.coveragePoints.addData(item);
        });
       }).
       catch(function(ex){
