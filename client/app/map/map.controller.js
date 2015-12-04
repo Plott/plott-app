@@ -46,12 +46,24 @@
     var bounds = new L.LatLngBounds(southWest, northEast);
     map.setMaxBounds(bounds);
 
+    var baseLayers = {
+      floor1: L.tileLayer('/api/tiles/jordanhall/1/{z}/{x}/{y}.png', {continuousWorld: true}),
+      floor2: L.tileLayer('/api/tiles/jordanhall/2/{z}/{x}/{y}.png', {continuousWorld: true}),
+      floor3: L.tileLayer('/api/tiles/jordanhall/3/{z}/{x}/{y}.png', {continuousWorld: true}),
+      floor4: L.tileLayer('/api/tiles/jordanhall/4/{z}/{x}/{y}.png', {continuousWorld: true}),
+      floor5: L.tileLayer('/api/tiles/jordanhall/5/{z}/{x}/{y}.png', {continuousWorld: true}),
+      floor6: L.tileLayer('/api/tiles/jordanhall/6/{z}/{x}/{y}.png', {continuousWorld: true}),
+      roof: L.tileLayer('/api/tiles/jordanhall/7/{z}/{x}/{y}.png', {continuousWorld: true})
+    };
+    baseLayers.floor1.addTo(map);
+    L.control.layers(baseLayers).addTo(map);
+
     $log.debug(map.getBounds());
-    vm.tileUri = '/api/tiles/' + vm.building + '/' + vm.floor + '/{z}/{x}/{y}.png';
-    L.tileLayer(vm.tileUri, {
-      // noWrap: true,
-      continuousWorld: true
-    }).addTo(map);
+    // vm.tileUri = '/api/tiles/' + vm.building + '/' + vm.floor + '/{z}/{x}/{y}.png';
+    // L.tileLayer(vm.tileUri, {
+    //   // noWrap: true,
+    //   continuousWorld: true
+    // }).addTo(map);
 
     var heat = L.heatLayer([], {
       maxZoom: 5,
