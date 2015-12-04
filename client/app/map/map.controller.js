@@ -47,18 +47,24 @@
     map.setMaxBounds(bounds);
 
     var baseLayers = {
-      floor1: L.tileLayer('/api/tiles/jordanhall/1/{z}/{x}/{y}.png', {continuousWorld: true}),
-      floor2: L.tileLayer('/api/tiles/jordanhall/2/{z}/{x}/{y}.png', {continuousWorld: true}),
-      floor3: L.tileLayer('/api/tiles/jordanhall/3/{z}/{x}/{y}.png', {continuousWorld: true}),
-      floor4: L.tileLayer('/api/tiles/jordanhall/4/{z}/{x}/{y}.png', {continuousWorld: true}),
-      floor5: L.tileLayer('/api/tiles/jordanhall/5/{z}/{x}/{y}.png', {continuousWorld: true}),
-      floor6: L.tileLayer('/api/tiles/jordanhall/6/{z}/{x}/{y}.png', {continuousWorld: true}),
-      roof: L.tileLayer('/api/tiles/jordanhall/7/{z}/{x}/{y}.png', {continuousWorld: true})
+      'Floor 1': L.tileLayer('/api/tiles/jordanhall/1/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Floor 2': L.tileLayer('/api/tiles/jordanhall/2/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Floor 3': L.tileLayer('/api/tiles/jordanhall/3/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Floor 4': L.tileLayer('/api/tiles/jordanhall/4/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Floor 5': L.tileLayer('/api/tiles/jordanhall/5/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Floor 6': L.tileLayer('/api/tiles/jordanhall/6/{z}/{x}/{y}.png', {continuousWorld: true}),
+      'Roof': L.tileLayer('/api/tiles/jordanhall/7/{z}/{x}/{y}.png', {continuousWorld: true})
     };
-    baseLayers.floor1.addTo(map);
+    baseLayers['Floor 1'].addTo(map);
     L.control.layers(baseLayers).addTo(map);
 
-    $log.debug(map.getBounds());
+    map.on('baselayerchange', function(e) {
+      $log.debug(e);
+      vm.floor = e.name !== 'Roof' ? e.name.split(' ')[1] : e.name;
+      $scope.$apply();
+    });
+
+
     // vm.tileUri = '/api/tiles/' + vm.building + '/' + vm.floor + '/{z}/{x}/{y}.png';
     // L.tileLayer(vm.tileUri, {
     //   // noWrap: true,
