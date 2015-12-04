@@ -9,9 +9,11 @@
 
   function MapCtrl($scope, $log, $http, socket, MAPBOX) {
     var vm = this;
-    vm.floor = 2;
+    vm.floor = 1;
+    vm.building = 'jordanhall';
     vm.coverageFeatures = [];
     vm.deleteCoverage = deleteCoverage;
+    vm.tileUri;
     L.mapbox.accessToken = MAPBOX.TOKEN;
 
     var xMin = 0;
@@ -45,8 +47,8 @@
     map.setMaxBounds(bounds);
 
     $log.debug(map.getBounds());
-
-    L.tileLayer('/api/tiles/{z}/{x}/{y}.png', {
+    vm.tileUri = '/api/tiles/' + vm.building + '/' + vm.floor + '/{z}/{x}/{y}.png';
+    L.tileLayer(vm.tileUri, {
       // noWrap: true,
       continuousWorld: true
     }).addTo(map);
