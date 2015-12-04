@@ -26,7 +26,7 @@
     // }));
 
     var map = L.map('map', {
-      minZoom: 0,
+      minZoom: 3,
       maxZoom: 5,
       center: [0,0],
       zoom: 3,
@@ -35,10 +35,12 @@
     });
 
     // map.setView([10, 10], 5);
-    // var southWest = map.unproject([0, -3600], map.getMaxZoom()-1);
-    // var northEast = map.unproject([xMax, 0], map.getMaxZoom()-1);
-    var northEast = [157, 347];
-    var southWest = [-346, -280]; //lat, lng
+    var _southWest = map.unproject([0, -3600], map.getMaxZoom()-1);
+    var _northEast = map.unproject([xMax, 0], map.getMaxZoom()-1);
+    $log.debug(_southWest, _northEast);
+
+    var northEast = [0, 375];
+    var southWest = [-120, -25]; //lat, lng
     var bounds = new L.LatLngBounds(southWest, northEast);
     map.setMaxBounds(bounds);
 
@@ -49,31 +51,34 @@
       continuousWorld: true
     }).addTo(map);
 
-    // var heat = L.heatLayer([], { maxZoom: 12 }).addTo(map);
+    var heat = L.heatLayer([], {
+      maxZoom: 5,
+      radius: 50,
+    }).addTo(map);
 
-    // activate();
+    activate();
 
-    // function activate() {
-    //   $http.get('/api/coverages')
-    //     .then(function(coveragePoints) {
-    //       vm.coverageFeatures = coveragePoints.data.features;
-    //       vm.coveragePoints = L.geoJson(vm.coverageFeatures, {
-    //         style: function (feature) {
-    //           return {color: feature.properties.color};
-    //         },
-    //         onEachFeature: function (feature, layer) {
-    //           heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-    //           layer.bindPopup(feature.properties.wifi[0].signal_level);
-    //         }
-    //       }).addTo(map);
-    //       socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
-    //         vm.coveragePoints.addData(item);
-    //       });
-    //     })
-    //     .catch(function(ex){
-    //       $log.error(ex);
-    //     });
-    // }
+    function activate() {
+      $http.get('/api/coverages')
+        .then(function(coveragePoints) {
+          vm.coverageFeatures = coveragePoints.data.features;
+          vm.coveragePoints = L.geoJson(vm.coverageFeatures, {
+            style: function (feature) {
+              return {color: feature.properties.color};
+            },
+            onEachFeature: function (feature, layer) {
+              heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
+              layer.bindPopup(feature.properties.wifi[0].signal_level);
+            }
+          }).addTo(map);
+          socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
+            vm.coveragePoints.addData(item);
+          });
+        })
+        .catch(function(ex){
+          $log.error(ex);
+        });
+    }
 
 
 
@@ -81,30 +86,30 @@
    map.on('click', function(e) {
      $log.debug(e);
      $log.debug(map.getBounds());
-    // heat.addLatLng(e.latlng);
-    // var data= {
-    //   type: 'Feature',
-    //   properties: {
-    //     address: '222 Test St',
-    //     floor: 1,
-    //     room: 'Office'
-    //   },
-    //   geometry: {
-    //     type: 'Point',
-    //     coordinates: [
-    //       e.latlng.lng,
-    //       e.latlng.lat
-    //     ]
-    //   }
-    // };
-    //
-    // $http.post('/api/coverages', data)
-    //   .then(function(res) {
-    //     $log.debug(res)
-    //   })
-    //   .catch(function(err) {
-    //     $log.error(err);
-    //   });
+    heat.addLatLng(e.latlng);
+    var data= {
+      type: 'Feature',
+      properties: {
+        address: '222 Test St',
+        floor: 1,
+        room: 'Office'
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          e.latlng.lng,
+          e.latlng.lat
+        ]
+      }
+    };
+
+    $http.post('/api/coverages', data)
+      .then(function(res) {
+        $log.debug(res)
+      })
+      .catch(function(err) {
+        $log.error(err);
+      });
 
   });
 
