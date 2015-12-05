@@ -18,6 +18,7 @@ function onConnect(socket) {
   });
 
   // Insert sockets below
+  require('../api/sensor/sensor.socket').register(socket);
   // require('../api/tile/tile.socket').register(socket);
   require('../api/building/building.socket').register(socket);
   require('../api/floorplan/floorplan.socket').register(socket);
