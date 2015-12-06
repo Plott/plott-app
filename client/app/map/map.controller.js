@@ -5,9 +5,9 @@
     .module('plottAppApp')
     .controller('MapCtrl', MapCtrl);
 
-  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX'];
+  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX', 'icons'];
 
-  function MapCtrl($scope, $log, $http, socket, MAPBOX) {
+  function MapCtrl($scope, $log, $http, socket, MAPBOX, icons) {
     var vm = this;
     vm.floor = 1;
     vm.building = 'jordanhall';
@@ -20,12 +20,6 @@
     var xMax = 4800;
     var yMin = -3600;
     var yMax = 0;
-
-    // var map = L.mapbox.map('map', 'mapbox.streets')
-    //   .setView([40, -74.50], 9)
-    //   .addControl(L.mapbox.geocoderControl('mapbox.places', {
-    //   autocomplete: true
-    // }));
 
     var map = L.map('map', {
       minZoom: 3,
@@ -64,13 +58,6 @@
       $scope.$apply();
     });
 
-
-    // vm.tileUri = '/api/tiles/' + vm.building + '/' + vm.floor + '/{z}/{x}/{y}.png';
-    // L.tileLayer(vm.tileUri, {
-    //   // noWrap: true,
-    //   continuousWorld: true
-    // }).addTo(map);
-
     var heat = L.heatLayer([], {
       maxZoom: 5,
       radius: 50,
@@ -87,13 +74,21 @@
               return {color: feature.properties.color};
             },
             onEachFeature: function (feature, layer) {
-              heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-              layer.bindPopup(feature.properties.wifi[0].signal_level);
+              // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
+              // layer.bindPopup(feature.properties.wifi[0].signal_level);
+            },
+            pointToLayer: function(feature, latlng) {
+              return L.marker(latlng, {
+                icon: icons.sensor(),
+                draggable: true
+              });
             }
           }).addTo(map);
+
           socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
             vm.coveragePoints.addData(item);
           });
+
         })
         .catch(function(ex){
           $log.error(ex);

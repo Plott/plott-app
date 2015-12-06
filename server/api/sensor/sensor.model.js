@@ -5,7 +5,10 @@ var mongoose = require('mongoose'),
 
 var SensorSchema = new Schema({
   name: String,
-  info: String,
+  location: String,
+  geo: {
+       coordinates: { type: [Number], index: '2dsphere'}
+  },
   active: Boolean
 });
 
