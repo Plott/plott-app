@@ -6,6 +6,31 @@
    height:100%;
    margin-top: 50px;
 }
+
+#sensorControl {
+  height: 26px;
+  width: 26px;
+  background: url('/assets/images/rssi.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 20px 20px;
+  background-color: #fff;
+  border: 1px solid #999;
+  border-color: rgba(0,0,0,.4);
+  border-radius: 3px;
+  box-shadow: none;
+  position: relative;
+  z-index: 7;
+  opacity: .75;
+  &:hover {
+    cursor: pointer;
+    background-color: #ddd;
+  }
+  &:active {
+
+  }
+}
+
 #mapLoad {
   position:absolute;
   top:50%;

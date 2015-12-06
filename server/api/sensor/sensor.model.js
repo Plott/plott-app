@@ -5,11 +5,23 @@ var mongoose = require('mongoose'),
 
 var SensorSchema = new Schema({
   name: String,
-  location: String,
+  building: String,
   geo: {
        coordinates: { type: [Number], index: '2dsphere'}
   },
-  active: Boolean
+  active: Boolean,
+  status: String,
+  meta: {
+    createdAt: {type: Date, default: Date.now},
+    createdBy: String,
+    updatedAt: { type: Date, default: Date.now },
+    updatedBy: String,
+  }
+});
+
+
+SensorSchema.pre('update', function() {
+  this.update({},{ meta: {$set: { updatedAt: Date.now } }});
 });
 
 module.exports = mongoose.model('Sensor', SensorSchema);

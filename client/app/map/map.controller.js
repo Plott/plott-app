@@ -63,6 +63,30 @@
       radius: 50,
     }).addTo(map);
 
+
+    //Add Map edit table
+    var sensorControl = L.Control.extend({
+      options: {
+        position: 'topleft'
+      },
+
+      onAdd: function (map) {
+        this._container = L.DomUtil.get('sensorControl');
+        // Disable dragging when user's cursor enters the element
+        this._container.addEventListener('mouseover', function () {
+            map.dragging.disable();
+        });
+        // Re-enable dragging when user's cursor leaves the element
+        this._container.addEventListener('mouseout', function () {
+            map.dragging.enable();
+        });
+          return this._container;
+      }
+    });
+
+    map.addControl(new sensorControl());
+
+
     activate();
 
     function activate() {
@@ -70,19 +94,11 @@
         .then(function(coveragePoints) {
           vm.coverageFeatures = coveragePoints.data.features;
           vm.coveragePoints = L.geoJson(vm.coverageFeatures, {
-            style: function (feature) {
-              return {color: feature.properties.color};
-            },
             onEachFeature: function (feature, layer) {
               // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
               // layer.bindPopup(feature.properties.wifi[0].signal_level);
             },
-            pointToLayer: function(feature, latlng) {
-              return L.marker(latlng, {
-                icon: icons.sensor(),
-                draggable: true
-              });
-            }
+            pointToLayer: sensorMarker
           }).addTo(map);
 
           socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
@@ -95,7 +111,18 @@
         });
     }
 
+    function sensorMarker (feature, latlng) {
+      var sensor = L.marker(latlng, {
+        icon: icons.sensor(),
+        draggable: true
+      });
 
+      sensor.on('dragend', function(e){
+        $log.debug('Sensor Dragend', e);
+      });
+
+      return sensor;
+    }
 
    //On click get interment data
    map.on('click', function(e) {
@@ -139,5 +166,7 @@
   });
 
 }
+
+
 
 })();
