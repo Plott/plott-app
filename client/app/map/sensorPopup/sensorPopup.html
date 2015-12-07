@@ -1,18 +1,22 @@
-<div ng-show="vm.active" class="container sensor-form">
+<div class="container sensor-form">
   <div class="row">
     <div class="col-md-12">
       <form>
         <div class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" placeholder="Sensor Name..." ng-model="vm.sensorName">
+          <input type="text" class="form-control" id="name" placeholder="Sensor Name..." ng-model="vm.formData.name">
         </div>
         <div class="form-group">
           <label for="active">Active</label>
-          <select ng-model="vm.selectedActive">
-            <option value="true">On</option>
-            <option value="false">Off</option>
+          <select ng-model="vm.formData.active" ng-options="item for item in vm.activeOptions">
+            <!-- <option value="true">true</option>
+            <option value="false">false</option> -->
           </select>
           <p class="help-block">Click map to add new sensor and drag the sensor to reposition on map.</p>
+        </div>
+        <div class="btn-group" role="group">
+          <button ng-click="" class="btn btn-primary">Save</button>
+          <button ng-click="" class="btn btn-danger">Remove</button>
         </div>
       </form>
     </div>

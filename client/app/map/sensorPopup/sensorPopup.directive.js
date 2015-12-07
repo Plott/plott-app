@@ -7,7 +7,7 @@
 
   sensorPopup.$inject = ['$log'];
 
-  function sensorPopup() {
+  function sensorPopup($log) {
     var directive = {
       templateUrl: 'app/map/sensorPopup/sensorPopup.html',
       restrict: 'E',
@@ -17,18 +17,28 @@
       bindToController: true,
       transclude: true,
       scope: {
-
+        data: '='
       }
     };
 
     return directive;
 
     function controller() {
-
+      var vm = this;
+      vm.activeOptions = [false, true];
+      vm.formData = {
+        active: false
+      };
     }
 
-    function link() {
-
+    function link(scope, elem, attrs, vm) {
+      scope.$watch('vm.data', function(){
+        $log.debug('Sensor Popup Link', vm.data);
+        if(vm.data){
+          angular.extend(vm.formData, vm.data.properties);
+          $log.debug('FormData', vm.formData)
+        }
+      })
     }
   }
 })();

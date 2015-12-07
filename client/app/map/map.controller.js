@@ -5,9 +5,9 @@
     .module('plottAppApp')
     .controller('MapCtrl', MapCtrl);
 
-  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX', 'icons'];
+  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX', 'icons', '$compile'];
 
-  function MapCtrl($scope, $log, $http, socket, MAPBOX, icons) {
+  function MapCtrl($scope, $log, $http, socket, MAPBOX, icons, $compile) {
     var vm = this;
     vm.floor = 1;
     vm.building = 'jordanhall';
@@ -107,8 +107,16 @@
           $log.debug('SensorFeatures:', vm.sensorFeatures);
           vm.sensorPoints = L.geoJson(vm.sensorFeatures, {
             onEachFeature: function (feature, layer) {
+              var html = "<sensor-popup data='feature'></sensor-popup>",
+              linkFunction = $compile(angular.element(html)),
+              newScope = $scope.$new();
+              newScope.feature = feature;
+
               // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-              layer.bindPopup('<h1>' + feature.properties.active + '</h1>');
+              layer.bindPopup(linkFunction(newScope)[0], {
+                minWidth: 200,
+                keepInView: true
+              });
             },
             pointToLayer: sensorMarker
           }).addTo(map);
@@ -148,14 +156,17 @@
         // $log.debug('Add Sensor Event', e)
         if (vm.addSensor) {
           var data = {
-            name: vm.sensorName,
-            building: vm.building,
-            floor: vm.floor,
+
+            properties: {
+              name: vm.sensorName,
+              building: vm.building,
+              floor: vm.floor,
+              active: vm.selectedActive,
+              status: vm.selectedStatus || 'off'
+            },
             geometry: {
               coordinates: [e.latlng.lng, e.latlng.lat]
-            },
-            active: vm.selectedActive,
-            status: vm.selectedStatus || 'off'
+            }
           };
         //  heat.addLatLng(e.latlng);
          $http.post('/api/sensors', data)
