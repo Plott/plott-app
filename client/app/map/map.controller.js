@@ -11,9 +11,10 @@
     var vm = this;
     vm.floor = 1;
     vm.building = 'jordanhall';
-    vm.coverageFeatures = [];
-    vm.deleteCoverage = deleteCoverage;
+    vm.sensorFeatures = [];
+    vm.deleteSensor = deleteSensor;
     vm.tileUri;
+    vm.addSensor = false;
     L.mapbox.accessToken = MAPBOX.TOKEN;
 
     var xMin = 0;
@@ -71,16 +72,27 @@
       },
 
       onAdd: function (map) {
-        this._container = L.DomUtil.get('sensorControl');
+        var container = L.DomUtil.get('sensorControl');
         // Disable dragging when user's cursor enters the element
-        this._container.addEventListener('mouseover', function () {
+
+        L.DomEvent
+            .addListener(container, 'click', L.DomEvent.stopPropagation)
+            .addListener(container, 'click', L.DomEvent.preventDefault);
+
+        container.addEventListener('mouseover', function () {
             map.dragging.disable();
         });
         // Re-enable dragging when user's cursor leaves the element
-        this._container.addEventListener('mouseout', function () {
+        container.addEventListener('mouseout', function () {
             map.dragging.enable();
         });
-          return this._container;
+
+        container.addEventListener('click', function () {
+          vm.addSensor = vm.addSensor ? false : true;
+          $log.debug('Sensor Button Click:', vm.addSensor);
+          $scope.$apply();
+        });
+        return container;
       }
     });
 
@@ -90,10 +102,10 @@
     activate();
 
     function activate() {
-      $http.get('/api/coverages')
-        .then(function(coveragePoints) {
-          vm.coverageFeatures = coveragePoints.data.features;
-          vm.coveragePoints = L.geoJson(vm.coverageFeatures, {
+      $http.get('/api/sensors')
+        .then(function(sensorPoints) {
+          vm.sensorFeatures = sensorPoints.data.features;
+          vm.sensorPoints = L.geoJson(vm.sensorFeatures, {
             onEachFeature: function (feature, layer) {
               // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
               // layer.bindPopup(feature.properties.wifi[0].signal_level);
@@ -101,8 +113,8 @@
             pointToLayer: sensorMarker
           }).addTo(map);
 
-          socket.syncUpdates('coverage', vm.coverageFeatures, function(event, item ){
-            vm.coveragePoints.addData(item);
+          socket.syncUpdates('sensors', vm.sensorFeatures, function(event, item ){
+            vm.sensorPoints.addData(item);
           });
 
         })
@@ -124,45 +136,45 @@
       return sensor;
     }
 
+
+
+
+      map.on('click', function(e) {
+        $log.debug('Add Sensor Event', e)
+        if (vm.addSensor) {
+          var data = {
+            name: vm.sensorName,
+            building: vm.building,
+            floor: vm.floor,
+            geometry: {
+              coordinates: [e.latlng.lng, e.latlng.lat]
+            },
+            active: vm.selectedActive,
+            status: vm.selectedStatus || 'off'
+          };
+        //  heat.addLatLng(e.latlng);
+         $http.post('/api/sensors', data)
+           .then(function(res) {
+             $log.debug(res)
+           })
+           .catch(function(err) {
+             $log.error(err);
+           });
+       }
+     });
+
+
    //On click get interment data
-   map.on('click', function(e) {
-     $log.debug(e);
-     $log.debug(map.getBounds());
-    heat.addLatLng(e.latlng);
-    var data= {
-      type: 'Feature',
-      properties: {
-        address: '222 Test St',
-        floor: 1,
-        room: 'Office'
-      },
-      geometry: {
-        type: 'Point',
-        coordinates: [
-          e.latlng.lng,
-          e.latlng.lat
-        ]
-      }
-    };
-
-    $http.post('/api/coverages', data)
-      .then(function(res) {
-        $log.debug(res)
-      })
-      .catch(function(err) {
-        $log.error(err);
-      });
-
-  });
 
 
 
-  function deleteCoverage(coverage) {
-    $http.delete('/api/coverages/' + coverage._id);
+
+  function deleteSensor(sensors) {
+    $http.delete('/api/sensors/' + sensors._id);
   }
 
   $scope.$on('$destroy', function () {
-    socket.unsyncUpdates('coverage');
+    socket.unsyncUpdates('sensors');
   });
 
 }

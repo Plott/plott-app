@@ -9,7 +9,11 @@ var Sensor = require('./sensor.model');
 
 // Gets a list of Sensors
 exports.index = function(req, res) {
-  res.json([]);
+  Sensor.find(function (err, sensors) {
+    if(err) { return handleError(res, err); }
+    sensors =toFeatureCollection(sensors);
+    return res.json(200, sensors);
+  });
 };
 
 // Get a single coverage
@@ -57,4 +61,11 @@ exports.destroy = function(req, res) {
 
 function handleError(res, err) {
   return res.send(500, err);
+}
+
+function toFeatureCollection(features){
+  return {
+    "type": "FeatureCollection",
+    "features": features
+  };
 }

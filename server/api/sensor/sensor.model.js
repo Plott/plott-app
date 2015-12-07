@@ -4,13 +4,18 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var SensorSchema = new Schema({
-  name: String,
-  building: String,
-  geo: {
+  type: {type: String, default: 'Feature'},
+  properties: {
+    name: String,
+    building: String,
+    floor: Number,
+    active: {type:Boolean, default: false},
+    status: {type: String, default: 'off'},
+  },
+  geometry: {
+       type: {type: String, default: 'Point'},
        coordinates: { type: [Number], index: '2dsphere'}
   },
-  active: Boolean,
-  status: String,
   meta: {
     createdAt: {type: Date, default: Date.now},
     createdBy: String,
