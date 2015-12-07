@@ -26,18 +26,8 @@
 
     function controller() {
       var vm = this;
-      $log.debug('Controller Active', vm.active);
     }
 
-    function link(scope, elem, attr, vm) {
-        scope.$watch('vm.active', function(){
-          if (vm.active){
-            // $log.debug(elem.context.style.backgroundImage)
-            angular.elemet(elem).css({'background-image': 'url("/assets/images/rssi_on.png")'})
-            // elem.context.style.backgroundImage = 'url("/assets/images/rssi_on.png")';
-            // elem.css({'background-image': 'url("/assets/images/rssi_on.png")'});
-          }
-        })
-    }
+    function link(scope, elem, attr, vm) {}
   }
 })();

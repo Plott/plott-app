@@ -25,7 +25,6 @@
     function controller() {
       let vm = this;
       vm.floor = vm.floor || 1;
-      $log.debug(vm.wifi)
       vm.wifi = vm.wifi || [];
 
     }

@@ -34,7 +34,7 @@
     // map.setView([10, 10], 5);
     var _southWest = map.unproject([0, -3600], map.getMaxZoom()-1);
     var _northEast = map.unproject([xMax, 0], map.getMaxZoom()-1);
-    $log.debug(_southWest, _northEast);
+
 
     var northEast = [0, 375];
     var southWest = [-120, -25]; //lat, lng
@@ -98,30 +98,35 @@
 
     map.addControl(new sensorControl());
 
-
     activate();
 
     function activate() {
       $http.get('/api/sensors')
         .then(function(sensorPoints) {
           vm.sensorFeatures = sensorPoints.data.features;
+          $log.debug('SensorFeatures:', vm.sensorFeatures);
           vm.sensorPoints = L.geoJson(vm.sensorFeatures, {
             onEachFeature: function (feature, layer) {
               // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-              // layer.bindPopup(feature.properties.wifi[0].signal_level);
+              layer.bindPopup('<h1>' + feature.properties.active + '</h1>');
             },
             pointToLayer: sensorMarker
           }).addTo(map);
-
-          socket.syncUpdates('sensors', vm.sensorFeatures, function(event, item ){
+          $log.debug('Socket.io', socket)
+          return vm.sensorPoints;
+        })
+        .then(function() {
+          socket.syncUpdates('sensor', vm.sensorFeatures, function(event, item ){
+            $log.debug('Socket Sensor Event', event, item);
             vm.sensorPoints.addData(item);
           });
-
         })
-        .catch(function(ex){
-          $log.error(ex);
+        .catch(function(err){
+          $log.error(err);
         });
     }
+
+
 
     function sensorMarker (feature, latlng) {
       var sensor = L.marker(latlng, {
@@ -140,7 +145,7 @@
 
 
       map.on('click', function(e) {
-        $log.debug('Add Sensor Event', e)
+        // $log.debug('Add Sensor Event', e)
         if (vm.addSensor) {
           var data = {
             name: vm.sensorName,
@@ -155,10 +160,11 @@
         //  heat.addLatLng(e.latlng);
          $http.post('/api/sensors', data)
            .then(function(res) {
-             $log.debug(res)
+             $log.debug('Sensors Post Success:', res)
+            //  vm.sensorPoints.addData(res.data);
            })
            .catch(function(err) {
-             $log.error(err);
+             $log.error('Sensor Post Fail',err);
            });
        }
      });
@@ -174,7 +180,7 @@
   }
 
   $scope.$on('$destroy', function () {
-    socket.unsyncUpdates('sensors');
+    socket.unsyncUpdates('sensor');
   });
 
 }
