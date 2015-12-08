@@ -30,7 +30,6 @@ angular.module('plottAppApp')
        */
       syncUpdates: function (modelName, array, cb) {
         cb = cb || angular.noop;
-
         /**
          * Syncs item creation/updates on 'model:save'
          */

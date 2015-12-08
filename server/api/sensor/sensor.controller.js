@@ -4,6 +4,7 @@
  */
 
 'use strict';
+var _ = require('lodash');
 var Sensor = require('./sensor.model');
 
 
@@ -36,23 +37,23 @@ exports.create = function(req, res) {
 // Updates an existing coverage in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
-  Sensor.findById(req.params.id, function (err, coverage) {
+  Sensor.findById(req.params.id, function (err, sensor) {
     if (err) { return handleError(res, err); }
-    if(!coverage) { return res.send(404); }
-    var updated = _.merge(coverage, req.body);
+    if(!sensor) { return res.send(404); }
+    var updated = _.merge(sensor, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
-      return res.json(200, coverage);
+      return res.json(200, sensor);
     });
   });
 };
 
 // Deletes a coverage from the DB.
 exports.destroy = function(req, res) {
-  Sensor.findById(req.params.id, function (err, coverage) {
+  Sensor.findById(req.params.id, function (err, sensor) {
     if(err) { return handleError(res, err); }
-    if(!coverage) { return res.send(404); }
-    Sensor.remove(function(err) {
+    if(!sensor) { return res.send(404); }
+    sensor.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.send(204);
     });

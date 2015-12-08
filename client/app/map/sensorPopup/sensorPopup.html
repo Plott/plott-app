@@ -15,8 +15,8 @@
           <p class="help-block">Click map to add new sensor and drag the sensor to reposition on map.</p>
         </div>
         <div class="btn-group" role="group">
-          <button ng-click="" class="btn btn-primary">Save</button>
-          <button ng-click="" class="btn btn-danger">Remove</button>
+          <button ng-click="vm.updateSensor(vm.formData)" class="btn btn-primary">Save</button>
+          <button ng-click="vm.deleteSensor()" class="btn btn-danger">Remove</button>
         </div>
       </form>
     </div>

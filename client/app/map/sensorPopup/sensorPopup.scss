@@ -3,3 +3,8 @@
   margin: 1em;
   background-color: #fff;
 }
+
+.leaflet-popup-close-button+.leaflet-popup-content-wrapper .leaflet-popup-content {
+    padding-top: 15px;
+    border: 1px solid #5A5A5A;
+}
