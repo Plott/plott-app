@@ -63,9 +63,7 @@
       radius: 50,
     }).addTo(map);
 
-
-    //Add Map edit table
-    var sensorControl = L.Control.extend({
+    L.Control.SensorControl = L.Control.extend({
       options: {
         position: 'topleft'
       },
@@ -93,7 +91,11 @@
       }
     });
 
-    map.addControl(new sensorControl());
+    L.control.sensor = function () {
+      return new L.Control.SensorControl();
+    }
+
+    L.control.sensor().addTo(map);
 
     activate();
 
@@ -150,8 +152,6 @@
         });
     }
 
-
-
     function sensorMarker (feature, latlng) {
       var sensor = L.marker(latlng, {
         icon: icons.sensor(),
@@ -180,9 +180,6 @@
 
       return sensor;
     }
-
-
-
 
       map.on('click', function(e) {
         if (vm.addSensor) {
