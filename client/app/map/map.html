@@ -1,7 +1,7 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 <div class="centerPage" cg-busy="{promise:coveragePromise, backdrop:false, templateUrl:'components/loader/loader.html'}"></div>
 <div id="map"></div>
-<map-info floor="vm.floor" wifi="vm.coverageFeatures"></map-info>
+<map-info floor="vm.floor" wifi="vm.sensorFeatures"></map-info>
 <sensor-map-control active="vm.addSensor" id="sensorControl"></sensor-map-control>
 <!-- <button id="sensorControl" popover-animation="true" uib-popover="I fade in and out!" type="button" class="btn btn-default"></button> -->
 

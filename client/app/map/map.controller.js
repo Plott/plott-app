@@ -220,7 +220,7 @@
    function handleError(err) {
      $log.error(err);
    }
-}
+ }
 
 
 
