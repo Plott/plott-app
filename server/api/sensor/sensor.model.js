@@ -9,6 +9,9 @@ var SensorSchema = new Schema({
     name: String,
     building: String,
     floor: Number,
+    host: String,
+    ip: String,
+    mac: String,
     active: {type:Boolean, default: false},
     status: {type: String, default: 'off'},
   },
@@ -25,8 +28,9 @@ var SensorSchema = new Schema({
 });
 
 
-SensorSchema.pre('update', function() {
-  this.update({},{ meta: {$set: { updatedAt: Date.now } }});
+SensorSchema.pre('save', function(next) {
+  this.meta.updatedAt = Date.now();
+  next();
 });
 
 module.exports = mongoose.model('Sensor', SensorSchema);

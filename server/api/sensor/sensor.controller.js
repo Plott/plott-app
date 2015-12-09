@@ -41,6 +41,10 @@ exports.findFloor = function(req, res) {
 
 // Creates a new coverage in the DB.
 exports.create = function(req, res) {
+  req.body.meta = {
+    createdBy: req.user._id,
+    updatedBy: req.user._id
+  };
   Sensor.create(req.body, function(err, thing) {
     if(err) { return handleError(res, err); }
     return res.json(201, thing);
@@ -49,6 +53,8 @@ exports.create = function(req, res) {
 
 // Updates an existing coverage in the DB.
 exports.update = function(req, res) {
+  req.body.meta.updatedBy = req.user._id;
+    
   if(req.body._id) { delete req.body._id; }
   Sensor.findById(req.params.id, function (err, sensor) {
     if (err) { return handleError(res, err); }
