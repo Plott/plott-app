@@ -5,35 +5,25 @@
     .module('plottAppApp')
     .controller('MapCtrl', MapCtrl);
 
-  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX', 'icons', '$compile'];
+  MapCtrl.$inject = ['$scope', '$log', '$http', 'socket', 'MAPBOX', 'icons', '$compile', 'sensorService'];
 
-  function MapCtrl($scope, $log, $http, socket, MAPBOX, icons, $compile) {
+  function MapCtrl($scope, $log, $http, socket, MAPBOX, icons, $compile, sensorService) {
     var vm = this;
     vm.floor = 1;
+    vm.sensors = 0;
     vm.building = 'jordanhall';
     vm.sensorFeatures = [];
     vm.tileUri;
     vm.addSensor = false;
     L.mapbox.accessToken = MAPBOX.TOKEN;
 
-    var xMin = 0;
-    var xMax = 4800;
-    var yMin = -3600;
-    var yMax = 0;
-
     var map = L.map('map', {
-      minZoom: 3,
+      minZoom: 2,
       maxZoom: 5,
       center: [0,0],
       zoom: 3,
-      // maxBounds: [[4800, 0],[0, 3600]],
       crs: L.CRS.Simple
     });
-
-    // map.setView([10, 10], 5);
-    var _southWest = map.unproject([0, -3600], map.getMaxZoom()-1);
-    var _northEast = map.unproject([xMax, 0], map.getMaxZoom()-1);
-
 
     var northEast = [0, 375];
     var southWest = [-120, -25]; //lat, lng
@@ -49,6 +39,7 @@
       'Floor 6': L.tileLayer('/api/tiles/jordanhall/6/{z}/{x}/{y}.png', {continuousWorld: true}),
       'Roof': L.tileLayer('/api/tiles/jordanhall/7/{z}/{x}/{y}.png', {continuousWorld: true})
     };
+
     baseLayers['Floor 1'].addTo(map);
     L.control.layers(baseLayers).addTo(map);
 
@@ -56,6 +47,10 @@
       $log.debug(e);
       vm.floor = e.name !== 'Roof' ? e.name.split(' ')[1] : e.name;
       $scope.$apply();
+
+      sensorService.byFloor(vm.building, vm.floor)
+        .then(getSensors)
+        .catch(handleError);
     });
 
     var heat = L.heatLayer([], {
@@ -100,61 +95,28 @@
     activate();
 
     function activate() {
-      $http.get('/api/sensors')
-        .then(function(res) {
-          vm.sensorFeatures = res.data.features;
-          $log.debug('Sensor GET:', res.status, vm.sensorFeatures);
-          vm.sensorPoints = L.geoJson(vm.sensorFeatures, {
-            onEachFeature: function (feature, layer) {
-              var html = "<sensor-popup data='feature'></sensor-popup>",
-              linkFunction = $compile(angular.element(html)),
-              newScope = $scope.$new();
-              newScope.feature = feature;
-              // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
-              layer.bindPopup(linkFunction(newScope)[0], {
-                minWidth: 200,
-                keepInView: true
-              });
-            },
-            pointToLayer: sensorMarker
-          }).addTo(map);
+      sensorService.byFloor(vm.building, vm.floor)
+        .then(getSensors)
+        .then(setSensorSocket)
+        .catch(handleError);
+    }
 
-          return vm.sensorPoints;
-        })
-        .then(function() {
-          socket.syncUpdates('sensor', vm.sensorFeatures, function(event, item ){
-            switch (event) {
-              case 'created':
-                vm.sensorPoints.addData(item);
-                break;
-              case 'updated':
-                vm.sensorPoints.eachLayer(function(l){
-                  if(l.feature._id === item._id) {
-                    vm.sensorPoints.removeLayer(l);
-                    vm.sensorPoints.addData(item);
-                  }
-                });
-                break;
-              case 'deleted':
-                vm.sensorPoints.eachLayer(function(l){
-                  if(l.feature._id === item._id) {
-                    vm.sensorPoints.removeLayer(l);
-                  }
-                });
-                break;
-              default:
-
-            }
-          });
-        })
-        .catch(function(err){
-          $log.error(err);
-        });
+    function sensorPopup (feature, layer) {
+      var html = "<sensor-popup data='feature'></sensor-popup>",
+      linkFunction = $compile(angular.element(html)),
+      newScope = $scope.$new();
+      newScope.feature = feature;
+      // heat.addLatLng(L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]), feature.properties.wifi[0].signal_level);
+      layer.bindPopup(linkFunction(newScope)[0], {
+        minWidth: 200,
+        keepInView: true
+      });
     }
 
     function sensorMarker (feature, latlng) {
+      feature.properties.status = feature.properties.active ? 'ready' : 'off';
       var sensor = L.marker(latlng, {
-        icon: icons.sensor(),
+        icon: icons.sensor(feature.properties.status),
         draggable: true
       });
 
@@ -181,38 +143,83 @@
       return sensor;
     }
 
-      map.on('click', function(e) {
-        if (vm.addSensor) {
-          var data = {
+    function getSensors(res) {
+      $log.debug('Sensor GET:', res.status, res);
+      vm.sensorFeatures = res.data.features;
+      if(vm.sensorPoints){
+        vm.sensorPoints.clearLayers();
+      }
 
-            properties: {
-              name: vm.sensorName,
-              building: vm.building,
-              floor: vm.floor,
-              active: vm.selectedActive,
-              status: vm.selectedStatus || 'off'
-            },
-            geometry: {
-              coordinates: [e.latlng.lng, e.latlng.lat]
+      vm.sensorPoints = L.geoJson(vm.sensorFeatures, {
+        onEachFeature: sensorPopup,
+        pointToLayer: sensorMarker,
+      }).addTo(map);
+      return vm.sensorPoints;
+    }
+
+    function setSensorSocket() {
+      socket.syncUpdates('sensor', vm.sensorFeatures, function(event, item ){
+        switch (event) {
+          case 'created':
+            $log.debug('Created Event:', item, typeof item.properties.floor, typeof vm.floor)
+            if(item.properties.floor == vm.floor){
+              vm.sensorPoints.addData(item);
             }
-          };
-        //  heat.addLatLng(e.latlng);
-         $http.post('/api/sensors', data)
-           .then(function(res) {
-             $log.debug('Sensor Post:', res.status, res)
+            break;
+          case 'updated':
+            vm.sensorPoints.eachLayer(function(l){
+              if(item.properties.floor == vm.floor){
+                if(l.feature._id === item._id) {
+                  vm.sensorPoints.removeLayer(l);
+                  vm.sensorPoints.addData(item);
+                }
+              }
+            });
+            break;
+          case 'deleted':
+            vm.sensorPoints.eachLayer(function(l){
+              if(l.feature._id === item._id) {
+                vm.sensorPoints.removeLayer(l);
+              }
+            });
+            break;
+          default:
+
+        }
+      });
+    }
+
+    map.on('click', function(e) {
+      if (vm.addSensor) {
+        var data = {
+          properties: {
+            name: vm.sensorName,
+            building: vm.building,
+            floor: vm.floor,
+            active: vm.selectedActive,
+            status: vm.selectedStatus || 'off'
+          },
+          geometry: {
+            coordinates: [e.latlng.lng, e.latlng.lat]
+          }
+        };
+      //  heat.addLatLng(e.latlng);
+        $http.post('/api/sensors', data)
+          .then(function(res) {
+            $log.debug('Sensor Post:', res.status, res)
             //  vm.sensorPoints.addData(res.data);
-           })
-           .catch(function(err) {
-             $log.error('Sensor Post:',err);
-           });
-       }
-     });
+          })
+          .catch(handleError);
+      }
+    });
 
    $scope.$on('$destroy', function () {
      socket.unsyncUpdates('sensor');
    });
 
-
+   function handleError(err) {
+     $log.error(err);
+   }
 }
 
 

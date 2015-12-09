@@ -19,10 +19,23 @@ exports.index = function(req, res) {
 
 // Get a single coverage
 exports.show = function(req, res) {
-  Sensor.findById(req.params.id, function (err, coverage) {
+  Sensor.findById(req.params.id, function (err, sensor) {
     if(err) { return handleError(res, err); }
-    if(!coverage) { return res.send(404); }
-    return res.json(coverage);
+    if(!sensor) { return res.send(404); }
+    sensors =toFeatureCollection(sensors);
+    return res.json(sensor);
+  });
+};
+
+// Get a all sensors on a particular buildings floor
+exports.findFloor = function(req, res) {
+  var building = req.query.building;
+  var floor = req.query.floor;
+  Sensor.find({'properties.building': building, 'properties.floor': floor}, function (err, sensors) {
+    if(err) { return handleError(res, err); }
+    if(!sensors) { return res.send(404); }
+    sensors =toFeatureCollection(sensors);
+    return res.json(200, sensors);
   });
 };
 
